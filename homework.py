@@ -73,7 +73,7 @@ class CaloriesCalculator(Calculator):
         txt1 = 'Сегодня можно съесть что-нибудь ещё, но с общей калорийностью'
         txt2 = 'не более'
         txt3 = 'Хватит есть!'
-        if today_stats < self.limit:
-            return f'{txt1} {txt2} {result} кКал'
-        else:
+        if today_stats >= self.limit:
             return f'{txt3}'
+        else:
+            return f'{txt1} {txt2} {result} кКал'
