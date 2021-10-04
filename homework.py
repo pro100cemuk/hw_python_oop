@@ -51,22 +51,23 @@ class CashCalculator(Calculator):
             'usd': (self.USD_RATE, 'USD')
         }
         cur_rate, cur_name = self.currencies[self.currency]
-        result = abs(self.get_calculate() / cur_rate)
-        if self.get_calculate() > 0:
+        result = self.get_calculate() / cur_rate
+        txt = 'Денег нет, держись'
+        if result > 0:
             return f'На сегодня осталось {result:.2f} {cur_name}'
         elif result == 0:
-            return 'Денег нет, держись'
+            return txt
         else:
-            return f'Денег нет, держись: твой долг - {result:.2f} {cur_name}'
+            return f'{txt}: твой долг - {abs(result):.2f} {cur_name}'
 
 
 class CaloriesCalculator(Calculator):
 
     def get_calories_remained(self):
         result = self.get_calculate()
-        txt1 = ('Сегодня можно съесть что-нибудь ещё, '
-                'но с общей калорийностью не более')
+        txt = ('Сегодня можно съесть что-нибудь ещё, '
+               'но с общей калорийностью не более')
         if result <= 0:
             return 'Хватит есть!'
         else:
-            return f'{txt1} {result} кКал'
+            return f'{txt} {result} кКал'
