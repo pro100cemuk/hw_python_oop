@@ -23,18 +23,20 @@ class Calculator:
         self.records.append(record)
 
     def get_today_stats(self):
+        today = dt.date.today()
         today_amount = [record.amount for record in self.records
-                        if record.date == dt.date.today()]
+                        if record.date == today]
         return sum(amount for amount in today_amount)
 
     def get_week_stats(self):
+        today = dt.date.today()
         week = dt.date.today() - dt.timedelta(days=7)
         week_amount = [record.amount for record in self.records
-                       if week < record.date <= dt.date.today()]
+                       if week < record.date <= today]
         return sum(amount for amount in week_amount)
 
     def get_calculate(self):
-        return (self.limit - self.get_today_stats())
+        return self.limit - self.get_today_stats()
 
 
 class CashCalculator(Calculator):
@@ -48,15 +50,14 @@ class CashCalculator(Calculator):
             'eur': (self.EURO_RATE, 'Euro'),
             'usd': (self.USD_RATE, 'USD')
         }
-        result = abs(self.get_calculate() / self.currencies[self.currency][0])
-        cur_name = self.currencies[self.currency][1]
-        txt = 'Денег нет, держись'
-        if self.get_today_stats() < self.limit:
+        cur_rate, cur_name = self.currencies[self.currency]
+        result = abs(self.get_calculate() / cur_rate)
+        if self.get_calculate() > 0:
             return f'На сегодня осталось {result:.2f} {cur_name}'
         elif result == 0:
-            return f'{txt}'
+            return 'Денег нет, держись'
         else:
-            return f'{txt}: твой долг - {result:.2f} {cur_name}'
+            return f'Денег нет, держись: твой долг - {result:.2f} {cur_name}'
 
 
 class CaloriesCalculator(Calculator):
@@ -65,8 +66,7 @@ class CaloriesCalculator(Calculator):
         result = self.get_calculate()
         txt1 = ('Сегодня можно съесть что-нибудь ещё, '
                 'но с общей калорийностью не более')
-        txt2 = 'Хватит есть!'
         if result <= 0:
-            return f'{txt2}'
+            return 'Хватит есть!'
         else:
             return f'{txt1} {result} кКал'
